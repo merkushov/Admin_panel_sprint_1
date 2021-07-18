@@ -1,7 +1,3 @@
-CREATE DATABASE movie_catalog;
-
-USE movie_catalog;
-
 CREATE SCHEMA content;
 
 CREATE EXTENSION "uuid-ossp";
@@ -32,12 +28,15 @@ CREATE TABLE content.movies (
     certificate_id INT,
     type_id INT NOT NULL,
     file_path TEXT,
-    rating NUMERIC(3,1) DEFAULT 0 NOT NULL
-        CONSTRAINT "between_0_and_10" CHECK (rating >=0 AND rating <= 10),
+    imdb_identifier VARCHAR(16),
+    imdb_rating NUMERIC(3,1) DEFAULT 0 NOT NULL
+        CONSTRAINT "between_0_and_10" CHECK (imdb_rating >=0 AND imdb_rating <= 10),
     description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX movies_imdb_identifier_uidx ON content.movies (imdb_identifier);
 
 ALTER TABLE content.movies
     ADD CONSTRAINT fk_movies_certificates
@@ -59,6 +58,8 @@ CREATE TABLE content.genres (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX genres_name_uidx ON content.genres (name);
 
 CREATE TABLE content.genre_movie (
     id BIGSERIAL PRIMARY KEY,
@@ -89,6 +90,8 @@ CREATE TABLE content.persons (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX persons_full_name_uidx ON content.persons (full_name);
 
 -- Роли персон (актёр, режисёр, сценарист и т.п.)
 CREATE TABLE content.person_roles (
