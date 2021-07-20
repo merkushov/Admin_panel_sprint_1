@@ -69,11 +69,11 @@ class PostgresSaver():
     def save_movies_data(self, movies: list[Movie]):
         cur = self.pg_connection.cursor()
 
-        cur.execute("SELECT id FROM content.movie_types WHERE name=%s", ('movie',))
+        cur.execute("SELECT id FROM content.movie_types WHERE name=%s", ('фильм',))
         movie_type = cur.fetchone()
 
         if not movie_type:
-            raise psycopg2.DataError("There is no movie_type with name 'movie'")
+            raise psycopg2.DataError("There is no movie_type with name 'фильм'")
 
         # Создаём Фильмы
         execute_batch(
@@ -122,19 +122,19 @@ class PostgresSaver():
             "       SELECT m.id, p.id, pr.id"
             "           FROM content.movies m"
             "               INNER JOIN (SELECT id FROM content.persons WHERE full_name IN %s) p ON 1=1"
-            "               INNER JOIN (SELECT id FROM content.person_roles WHERE name = 'actor') pr ON 1=1"
+            "               INNER JOIN (SELECT id FROM content.person_roles WHERE name = 'актёр') pr ON 1=1"
             "           WHERE m.imdb_identifier=%s"
             "       UNION ALL"
             "       SELECT m.id, p.id, pr.id"
             "           FROM content.movies m"
             "               INNER JOIN (SELECT id FROM content.persons WHERE full_name IN %s) p ON 1=1"
-            "               INNER JOIN (SELECT id FROM content.person_roles WHERE name = 'writer') pr ON 1=1"
+            "               INNER JOIN (SELECT id FROM content.person_roles WHERE name = 'сценарист') pr ON 1=1"
             "           WHERE m.imdb_identifier=%s"
             "       UNION ALL"
             "       SELECT m.id, p.id, pr.id"
             "           FROM content.movies m"
             "               INNER JOIN (SELECT id FROM content.persons WHERE full_name IN %s) p ON 1=1"
-            "               INNER JOIN (SELECT id FROM content.person_roles WHERE name = 'director') pr ON 1=1"
+            "               INNER JOIN (SELECT id FROM content.person_roles WHERE name = 'режисёр') pr ON 1=1"
             "           WHERE m.imdb_identifier=%s"
             "   ON CONFLICT (movie_id, person_id, person_role_id) DO NOTHING",
             [
@@ -144,8 +144,6 @@ class PostgresSaver():
                     tuple(movie_person_role[imdb_key]['directors']),  imdb_key,
                 ) for imdb_key in movie_person_role ]
         )
-
-        print("Movies inserted...")
 
         self.pg_connection.commit()
         cur.close()

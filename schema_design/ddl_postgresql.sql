@@ -12,6 +12,8 @@ CREATE TABLE content.certificates (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE UNIQUE INDEX certificates_name_uidx ON certificates (name);
+
 -- Тип контента (фильма, сериал и т.п.)
 CREATE TABLE content.movie_types (
     id SERIAL PRIMARY KEY,
@@ -19,6 +21,8 @@ CREATE TABLE content.movie_types (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX movie_types_name_uidx ON content.movie_types (name);
 
 -- Фильмы
 CREATE TABLE content.movies (
@@ -102,7 +106,7 @@ CREATE TABLE content.person_roles (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE content.person_person_role_movie (
+CREATE TABLE content.movie_person_role (
     id BIGSERIAL PRIMARY KEY,
     movie_id UUID NOT NULL,
     person_id UUID NOT NULL,
@@ -110,21 +114,21 @@ CREATE TABLE content.person_person_role_movie (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX person_person_role_movie_uidx ON content.person_person_role_movie (movie_id, person_role_id, person_id);
+CREATE UNIQUE INDEX movie_person_role_uidx ON content.movie_person_role (movie_id, person_role_id, person_id);
 
-ALTER TABLE content.person_person_role_movie
-    ADD CONSTRAINT fk_person_person_role_movie_movies
+ALTER TABLE content.movie_person_role
+    ADD CONSTRAINT fk_movie_person_role_movies
     FOREIGN KEY (movie_id)
     REFERENCES movies (id)
         ON DELETE RESTRICT ON UPDATE NO ACTION;
 
-ALTER TABLE content.person_person_role_movie
-    ADD CONSTRAINT fk_person_person_role_movie_persons
+ALTER TABLE content.movie_person_role
+    ADD CONSTRAINT fk_movie_person_role_persons
     FOREIGN KEY (person_id)
     REFERENCES persons (id)
         ON DELETE RESTRICT ON UPDATE NO ACTION;
 
-ALTER TABLE content.person_person_role_movie
+ALTER TABLE content.movie_person_role
     ADD CONSTRAINT fk_erson_person_role_movie_person_roles
     FOREIGN KEY (person_role_id)
     REFERENCES person_roles (id)
