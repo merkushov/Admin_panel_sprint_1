@@ -129,8 +129,8 @@ class Movie(TimeStampedModel):
     persons = models.ManyToManyField(
         Person,
         verbose_name=_('персона фильма'),
-        # verbose_name_plural=_('персоны фильма'),
-        # on_delete=models.CASCADE,
+        through='MoviePersonRole',
+        through_fields=['movie_id', 'person_id'],
         blank=True,
     )
 
