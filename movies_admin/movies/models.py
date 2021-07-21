@@ -12,6 +12,12 @@ class Certificate(TimeStampedModel):
         verbose_name = _('возрастной ценз')
         verbose_name_plural = _('возрастные цензы')
         db_table = 'content\".\"certificates'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name'],
+                name='certificates_name_uidx',
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -25,6 +31,12 @@ class Genre(TimeStampedModel):
         verbose_name = _('жанр')
         verbose_name_plural = _('жанры')
         db_table = 'content\".\"genres'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name'],
+                name='genres_name_uidx'
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -44,6 +56,12 @@ class Person(TimeStampedModel):
         verbose_name = _('персона')
         verbose_name_plural = _('персоны')
         db_table = 'content\".\"persons'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['full_name'],
+                name='persons_full_name_uidx'
+            )
+        ]
 
     def __str__(self):
         return self.full_name
@@ -56,6 +74,12 @@ class MovieType(TimeStampedModel):
         verbose_name = _('тип кинопроизведения')
         verbose_name_plural = _('типы кинопроизведений')
         db_table = 'content\".\"movie_types'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name'],
+                name='movie_types_name_uidx'
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -127,6 +151,12 @@ class PersonRole(TimeStampedModel):
         verbose_name = _('роль')
         verbose_name_plural = _('роли')
         db_table = 'content\".\"person_roles'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name'],
+                name='person_roles_name_uidx',
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -146,3 +176,9 @@ class MoviePersonRole(models.Model):
         verbose_name = _('персона фильма')
         verbose_name_plural = _('персоны фильмов')
         db_table = 'content\".\"movie_person_role'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['movie_id', 'person_id', 'person_role_id'],
+                name='movie_person_role_main_uidx'
+            )
+        ]
