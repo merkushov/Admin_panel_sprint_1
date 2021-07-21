@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Movie, Genre, MovieType, Person, PersonRole, MoviePersonRole
+from .models import Movie, Genre, MovieType, Person
+from .models import PersonRole, MoviePersonRole, Certificate
 
 
 class MoviePersonRoleInline(admin.TabularInline):
@@ -20,7 +21,7 @@ class MovieAdmin(admin.ModelAdmin):
 
     # порядок следования полей в форме создания/редактирования
     fields = (
-        'title', 'type', 'description', 'certificate',
+        'title', 'type', 'creation_date', 'description', 'certificate',
         'file_path', 'rating', 'genres'
     )
 
@@ -44,4 +45,9 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(PersonRole)
 class PersonRoleAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Certificate)
+class CertificateAdmin(admin.ModelAdmin):
     pass
