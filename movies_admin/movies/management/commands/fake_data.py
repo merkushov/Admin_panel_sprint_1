@@ -73,28 +73,28 @@ class Command(BaseCommand):
             help='The number of elements (Movies) to generate',
         )
         parser.add_argument(
-            '--movie_genre_coefficient',
+            '--movie_genre_coeff',
             type=int,
             default=3,
             help='Determines how much more the total '
             'number of links of films with genres will be',
         )
         parser.add_argument(
-            '--movie_actor_coefficient',
+            '--movie_actor_coeff',
             type=int,
             default=20,
             help='Determines how much more the total '
             'number of links of films with actors will be',
         )
         parser.add_argument(
-            '--movie_director_coefficient',
+            '--movie_director_coeff',
             type=int,
             default=2,
             help='Determines how much more the total '
             'number of links of films with directors will be',
         )
         parser.add_argument(
-            '--movie_writer_coefficient',
+            '--movie_writer_coeff',
             type=int,
             default=3,
             help='Determines how much more the total '
@@ -109,7 +109,9 @@ class Command(BaseCommand):
 
         return result
 
-    def fillin_catalog(self, factory_manager, manager, total_count=10, **kwargs):
+    def fillin_catalog(
+                        self, factory_manager, manager,
+                        total_count=10, **kwargs):
         print("Start processing %s (bulk_create)" % manager.__name__)
 
         factory_options = {}
@@ -163,12 +165,6 @@ class Command(BaseCommand):
         return True
 
     def handle(self, *args, **options):
-        # MovieFactory()
-        # return
-
-        # MovieTypeFactory(name='фильм')
-        # MovieTypeFactory(name='сериал')
-
         person_interval = PersonInterval()
         self.fillin_catalog(
             PersonFactory,
@@ -216,15 +212,11 @@ class Command(BaseCommand):
 
         movie_interval.max = movie_interval_show.max
 
-        # print(genre_interval)
-        # print(person_interval)
-        # print(movie_interval)
-
         actor = PersonRoleFactory(name='актёр')
         director = PersonRoleFactory(name='директор')
         writer = PersonRoleFactory(name='сценарист')
 
-        mp_count = options['movie_actor_coefficient']*options['count_movies']
+        mp_count = options['movie_actor_coeff']*options['count_movies']
         self.fillin_catalog(
             MoviePersonRoleRandomFactory,
             MoviePersonRole,
@@ -235,7 +227,7 @@ class Command(BaseCommand):
             total_count=mp_count,
         )
 
-        mp_count = options['movie_director_coefficient']*options['count_movies']
+        mp_count = options['movie_director_coeff']*options['count_movies']
         self.fillin_catalog(
             MoviePersonRoleRandomFactory,
             MoviePersonRole,
@@ -246,7 +238,7 @@ class Command(BaseCommand):
             total_count=mp_count,
         )
 
-        mp_count = options['movie_writer_coefficient']*options['count_movies']
+        mp_count = options['movie_writer_coeff']*options['count_movies']
         self.fillin_catalog(
             MoviePersonRoleRandomFactory,
             MoviePersonRole,
@@ -257,7 +249,7 @@ class Command(BaseCommand):
             total_count=mp_count,
         )
 
-        mg_count = options['movie_genre_coefficient']*options['count_movies']
+        mg_count = options['movie_genre_coeff']*options['count_movies']
         self.fillin_catalog(
             MovieGenreRandomFactory,
             MovieGenre,
