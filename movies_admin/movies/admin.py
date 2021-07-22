@@ -1,11 +1,18 @@
 from django.contrib import admin
-from .models import Movie, Genre, MovieType, Person
-from .models import PersonRole, MoviePersonRole, Certificate
+from .models import (
+    Movie, Genre, MovieType, Person,
+    PersonRole, MoviePersonRole, Certificate,
+    MovieGenre
+)
 
 
 class MoviePersonRoleInline(admin.TabularInline):
     model = MoviePersonRole
     extra = 0
+
+
+class MovieGenreInline(admin.TabularInline):
+    model = MovieGenre
 
 
 @admin.register(Movie)
@@ -22,10 +29,10 @@ class MovieAdmin(admin.ModelAdmin):
     # порядок следования полей в форме создания/редактирования
     fields = (
         'title', 'type', 'creation_date', 'description', 'certificate',
-        'file_path', 'rating', 'genres'
+        'file_path', 'rating'
     )
 
-    inlines = (MoviePersonRoleInline, )
+    inlines = (MovieGenreInline, MoviePersonRoleInline)
 
 
 @admin.register(Genre)
