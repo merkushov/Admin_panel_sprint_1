@@ -125,7 +125,13 @@ class Movie(TimeStampedModel):
         blank=True,
         null=True
     )
-    genres = models.ManyToManyField(Genre)
+    genres = models.ManyToManyField(
+        Genre,
+        verbose_name=_('жанр фильма'),
+        through='MovieGenre',
+        through_fields=['movie_id', 'genre_id'],
+        blank=True
+    )
     persons = models.ManyToManyField(
         Person,
         verbose_name=_('персона фильма'),
@@ -141,6 +147,37 @@ class Movie(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class MovieGenre(models.Model):
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name="mgs",
+        related_query_name="mg",
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE,
+        related_name="gms",
+        related_query_name="gm",
+    )
+    created = models.DateTimeField(
+        _('дата создания'),
+        auto_now_add=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = _('жанр фильма')
+        verbose_name_plural = _('жанры фильма')
+        db_table = 'content\".\"movie_genre'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['movie_id', 'genre_id'],
+                name='movie_genre_main_uidx'
+            )
+        ]
 
 
 class PersonRole(TimeStampedModel):
