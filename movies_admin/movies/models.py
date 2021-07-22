@@ -56,12 +56,6 @@ class Person(TimeStampedModel):
         verbose_name = _('персона')
         verbose_name_plural = _('персоны')
         db_table = 'content\".\"persons'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['full_name'],
-                name='persons_full_name_uidx'
-            )
-        ]
 
     def __str__(self):
         return self.full_name
