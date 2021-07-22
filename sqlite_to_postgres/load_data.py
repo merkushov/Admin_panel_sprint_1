@@ -159,7 +159,7 @@ class PostgresSaver():
 
         execute_batch(
             cur,
-            "INSERT INTO content.person_person_role_movie"
+            "INSERT INTO content.movie_person_role"
             "   (movie_id, person_id, person_role_id)"
             "       SELECT m.id, p.id, pr.id"
             "           FROM content.movies m"
@@ -239,9 +239,8 @@ class SQLiteLoader():
         in_placeholders = ','.join(['?'] * len(unique_data))
 
         rows = self.sqlite_connection.execute(
-            "SELECT id, name"
-            "   FROM writers"
-            "   WHERE id IN %s AND name != 'N/A'",
+            f"SELECT id, name FROM writers "
+            f"WHERE id IN ({in_placeholders}) AND name != 'N/A'",
             list(unique_data.keys())
         ).fetchall()
 
@@ -253,10 +252,14 @@ class SQLiteLoader():
 
     def _get_movie_actors(self, movie_id: str):
         rows = self.sqlite_connection.execute(
-            "SELECT a.id, a.name"
-            "   FROM actors a"
-            "       LEFT JOIN movie_actors ms ON a.id=ms.actor_id"
-            "   WHERE ms.movie_id = %s AND a.name != 'N/A'",
+            ''.join(
+                (
+                    "SELECT a.id, a.name ",
+                    "FROM actors a ",
+                    "LEFT JOIN movie_actors ms ON a.id=ms.actor_id ",
+                    "WHERE ms.movie_id = ? AND a.name != 'N/A'",
+                )
+            ),
             (movie_id,)
         ).fetchall()
 
@@ -312,15 +315,13 @@ class SQLiteLoader():
         persons = []
 
         rows = self.sqlite_connection.execute(
-            "SELECT name FROM actors LIMIT %s, %s",
-            (start, limit)
+            "SELECT name FROM actors LIMIT %s, %s" % (start, limit)
         ).fetchall()
         for row in rows:
             persons.append(row["name"])
 
         rows = self.sqlite_connection.execute(
-            "SELECT director FROM movies LIMIT %s, %s",
-            (start, limit)
+            "SELECT director FROM movies LIMIT %s, %s" % (start, limit)
         ).fetchall()
         for row in rows:
             if not self._check_na(row["director"]):
@@ -328,8 +329,7 @@ class SQLiteLoader():
                     persons.append(x.strip())
 
         rows = self.sqlite_connection.execute(
-            "SELECT name FROM writers LIMIT %s, %s",
-            (start, limit)
+            "SELECT name FROM writers LIMIT %s, %s" % (start, limit)
         ).fetchall()
         for row in rows:
             persons.append(row["name"])
@@ -340,8 +340,7 @@ class SQLiteLoader():
         genres = {}
 
         rows = self.sqlite_connection.execute(
-            "SELECT genre FROM movies LIMIT %s, %s",
-            (start, limit)
+            "SELECT genre FROM movies LIMIT %s, %s" % (start, limit)
         ).fetchall()
         for row in rows:
             for genre in row["genre"].replace(' ', '').split(','):
@@ -400,7 +399,6 @@ if __name__ == '__main__':
     pg_dsn = {
         'dbname': 'movie_catalog',
         'user': 'postgres',
-        # 'password': 1234,
         'password': 'qdQd03NdkJDIb3293jkhasdejd',
         'host': '127.0.0.1',
         'port': 5432,
