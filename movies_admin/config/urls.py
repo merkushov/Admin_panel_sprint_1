@@ -18,4 +18,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Я не знаю что такое дебаг-тулбар и не пользовался им, поэтому
+    # я не прописываю тут его роуты.
 ]

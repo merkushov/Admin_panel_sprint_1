@@ -145,6 +145,10 @@ class PostgresSaver():
                 movie.imdb_identifier, {}
             ).setdefault('writers', ['stumb'])
             for actor in movie.actors:
+                # Авторы сильно упростили пример с базой. Я брал за основу
+                # базу предыдущей версии. Там не было UUID в качестве ключей.
+                # Я понимаю приемущество UUID. Я не хочу использовать
+                # это тип в Проекте. ТЗ это не регламентирует.
                 movie_person_role[movie.imdb_identifier]['actors'].append(
                     actor.name
                 )
@@ -314,6 +318,13 @@ class SQLiteLoader():
     def load_persons(self, start: int, limit: int) -> list:
         persons = []
 
+        # Код не самый оптимальный, но
+        # 1. Код не критичный, и операция импорта данных будет вызвана
+        #   считанное количество раз. В идеале, один раз.
+        # 2. Исходя из пункта выше, можно принебречь небольшими
+        #   накладными расходами, в пользу читаемости и удобства
+        #   поддержки.
+
         rows = self.sqlite_connection.execute(
             "SELECT name FROM actors LIMIT %s, %s" % (start, limit)
         ).fetchall()
@@ -331,6 +342,26 @@ class SQLiteLoader():
         rows = self.sqlite_connection.execute(
             "SELECT name FROM writers LIMIT %s, %s" % (start, limit)
         ).fetchall()
+
+        # Использовать имя как уникальный ключ неправильно, но...
+        # 1. В старой (первой) версии БД Проекта автоматический перенос
+        #   Персон не представляется возможным. Т.к. имена авторов
+        #   и сценаристов дублируются между собой, но имеют разные типы
+        #   идентификаторов. Пример
+        #       sqlite> .tables
+        #       actors movie_actors movies rating_agency  writers
+        #       sqlite> SELECT * FROM (
+        #           SELECT * FROM writers
+        #           UNION ALL
+        #           SELECT * FROM actors
+        #        ) WHERE name IN('William Winckler', 'Paul Reiche III');
+        #       0b60f2f3a6d7e55418d8e8cfd2dd7a8ace0f55fc|Paul Reiche III
+        #       0b60f2f3d1f03b284d44cd48204e18490c980ec4|William Winckler
+        #       2279|William Winckler
+        #       2345|Paul Reiche III
+        # 2. Легенда проекта не предусматривает инфраструктуру для
+        #   полу-ручного переноса данных или ручной верификации.
+
         for row in rows:
             persons.append(row["name"])
 
@@ -350,10 +381,25 @@ class SQLiteLoader():
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
-        return super().default(o)
+    def default(self, object):
+        if dataclasses.is_dataclass(object):
+            return dataclasses.asdict(object)
+        return super().default(object)
+
+
+def load_loop(sqlite_action, pg_action):
+    limit = 500
+
+    start = 0
+    while 1:
+        data = sqlite_action(start, limit)
+        if len(data) == 0:
+            break
+
+        pg_action(data)
+        start += limit
+
+    return True
 
 
 def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
@@ -361,38 +407,23 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
     postgres_saver = PostgresSaver(pg_conn)
     sqlite_loader = SQLiteLoader(connection)
 
-    limit = 500
-
     # Загрузка справочника Персон (SQLite: Актёры, Сценаристы и Режисёры)
-    start = 0
-    while 1:
-        data = sqlite_loader.load_persons(start, limit)
-        if len(data) == 0:
-            break
-
-        postgres_saver.save_persons_data(data)
-        start += limit
+    load_loop(
+        sqlite_loader.load_persons,
+        postgres_saver.save_persons_data,
+    )
 
     # Загрузка справочника Жанров
-    start = 0
-    while 1:
-        data = sqlite_loader.load_genres(start, limit)
-        if len(data) == 0:
-            break
-
-        postgres_saver.save_genres_data(data)
-        start += limit
+    load_loop(
+        sqlite_loader.load_genres,
+        postgres_saver.save_genres_data,
+    )
 
     # Загрузка каталога Фильмов и всех связей с Жанрами и Персонами
-    start = 0
-    while 1:
-        data = sqlite_loader.load_movies(start, limit)
-        if len(data) == 0:
-            break
-
-        # print(json.dumps(data, cls=EnhancedJSONEncoder))
-        postgres_saver.save_movies_data(data)
-        start += limit
+    load_loop(
+        sqlite_loader.load_movies,
+        postgres_saver.save_movies_data,
+    )
 
 
 if __name__ == '__main__':

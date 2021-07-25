@@ -1,4 +1,5 @@
 """
+Я начинающий Django разработчик и мне нужны все дефолтные комментарии.
 WSGI config for config project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.

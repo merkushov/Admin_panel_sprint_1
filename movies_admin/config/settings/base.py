@@ -20,6 +20,11 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
+# Я перенесу все "чувствительные" к безопастности поля в переменные окружения,
+# как только нам грамотно расскажут про настройку среды разработки и деплой.
+# И как только я пойму, что у нас всех, в том числе у ревьюеров, есть общее
+# понимание того, как запускать Проект.
 SECRET_KEY = '3vsg*wbd@i7h=#e!20cbf6f-smej=_+#k3j=m+mxir-_%*kh6x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -74,6 +79,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# Эти данные не стоит загружать из переменной окружения потому что:
+# 1. Я специально удобно расположил их в конфиге (как описано в теории),
+#   который специально удобно разделён по типам инстансев.
+# 2. Возможны вариант, когда перенос этих данных в переменные оправдан,
+#   но в данный момент это будет являться преждевременной оптимизацией,
+#   что является плохой практикой, и усложнит "чтение" кода проекта.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
