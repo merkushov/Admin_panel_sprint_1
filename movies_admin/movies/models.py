@@ -5,12 +5,22 @@ from model_utils.models import TimeStampedModel
 
 
 class Certificate(TimeStampedModel):
-    name = models.CharField(_('название'), max_length=60)
-    description = models.TextField(_('описание'), blank=True)
+    name = models.CharField(_('name'), max_length=60)
+    description = models.TextField(_('description'), blank=True)
 
     class Meta:
-        verbose_name = _('возрастной ценз')
-        verbose_name_plural = _('возрастные цензы')
+        verbose_name = _('age qualification')
+        verbose_name_plural = _('age qualifications')
+        # Я пытаюсь применить теорию. В Теории к этому Курсу говорится,
+        # что нужно хранить данные в отдельной "схеме".
+        # Это постулируется как бест-практис!
+        # Единственная возможность, которую я нагуглил для Джанго это
+        # вот этот хак с db_table.
+        # Указание search_path для этого не подходит. Этот конфиг
+        # позволяет указать схемы для поиска для соединения.
+        # Побочный эффект конфига, - первая указанная схема
+        # станет дефолтной. Т.е. все таблицы всего Джанго будут
+        # созданы в первой из указанных схем.
         db_table = 'content\".\"certificates'
         constraints = [
             models.UniqueConstraint(
@@ -24,12 +34,12 @@ class Certificate(TimeStampedModel):
 
 
 class Genre(TimeStampedModel):
-    name = models.CharField(_('название'), max_length=255)
-    description = models.TextField(_('описание'), blank=True)
+    name = models.CharField(_('name'), max_length=255)
+    description = models.TextField(_('description'), blank=True)
 
     class Meta:
-        verbose_name = _('жанр')
-        verbose_name_plural = _('жанры')
+        verbose_name = _('ganre')
+        verbose_name_plural = _('genres')
         db_table = 'content\".\"genres'
         constraints = [
             models.UniqueConstraint(
@@ -43,18 +53,18 @@ class Genre(TimeStampedModel):
 
 
 class Gender(models.TextChoices):
-    MALE = 'male', _('мужской')
-    FEMALE = 'female', _('женский')
+    MALE = 'male', _('male gender ')
+    FEMALE = 'female', _('female gender ')
 
 
 class Person(TimeStampedModel):
-    full_name = models.CharField(_('ФИО'), max_length=255)
-    birth_date = models.DateField(_('дата рождения'), blank=True, null=True)
-    gender = models.TextField(_('пол'), choices=Gender.choices, null=True)
+    full_name = models.CharField(_('full name'), max_length=255)
+    birth_date = models.DateField(_('date of birth '), blank=True, null=True)
+    gender = models.TextField(_('gender'), choices=Gender.choices, null=True)
 
     class Meta:
-        verbose_name = _('персона')
-        verbose_name_plural = _('персоны')
+        verbose_name = _('person')
+        verbose_name_plural = _('persons')
         db_table = 'content\".\"persons'
 
     def __str__(self):
@@ -62,11 +72,11 @@ class Person(TimeStampedModel):
 
 
 class MovieType(TimeStampedModel):
-    name = models.CharField(_('название'), max_length=255)
+    name = models.CharField(_('name'), max_length=255)
 
     class Meta:
-        verbose_name = _('тип кинопроизведения')
-        verbose_name_plural = _('типы кинопроизведений')
+        verbose_name = _('type of film')
+        verbose_name_plural = _('types of film')
         db_table = 'content\".\"movie_types'
         constraints = [
             models.UniqueConstraint(
@@ -80,32 +90,37 @@ class MovieType(TimeStampedModel):
 
 
 class Movie(TimeStampedModel):
-    title = models.CharField(_('название'), max_length=255)
-    description = models.TextField(_('описание'), blank=True)
+    title = models.CharField(_('name'), max_length=255)
+    description = models.TextField(_('description'), blank=True)
     imdb_identifier = models.CharField(
-        _('IMDB идентификатор'),
+        _('IMDB identifier'),
         max_length=255,
         blank=True
     )
     creation_date = models.DateField(
-        _('дата создания фильма'),
+        _('movie creation date '),
         blank=True,
         null=True
     )
     file_path = models.FileField(
-        _('файл'),
+        _('file'),
         upload_to='movies/',
         blank=True
     )
     rating = models.FloatField(
-        _('рейтинг'),
+        _('rating'),
         validators=[MinValueValidator(0)],
         blank=True,
         default=0
     )
+    # Я хочу максимально нормализованную схему.
+    # Мой опыт показывает, что это хорошая практика. Поэтому я вынес
+    # все справочники в отдельные таблицы. У вас в ТЗ прямо
+    # не регламентировано, что я должен хранить эти данные
+    # вместе с фильмом.
     type = models.ForeignKey(
         MovieType,
-        verbose_name=_('тип кинопроизведения'),
+        verbose_name=_('type of film'),
         related_name='movies',
         on_delete=models.SET_NULL,
         blank=True,
@@ -113,7 +128,7 @@ class Movie(TimeStampedModel):
     )
     certificate = models.ForeignKey(
         Certificate,
-        verbose_name=('возрастной ценз'),
+        verbose_name=('age qualification'),
         related_name='movies',
         on_delete=models.SET_NULL,
         blank=True,
@@ -121,22 +136,22 @@ class Movie(TimeStampedModel):
     )
     genres = models.ManyToManyField(
         Genre,
-        verbose_name=_('жанр фильма'),
+        verbose_name=_('film genre '),
         through='MovieGenre',
         through_fields=['movie_id', 'genre_id'],
         blank=True
     )
     persons = models.ManyToManyField(
         Person,
-        verbose_name=_('персона фильма'),
+        verbose_name=_('film person'),
         through='MoviePersonRole',
         through_fields=['movie_id', 'person_id'],
         blank=True,
     )
 
     class Meta:
-        verbose_name = _('кинопроизведение')
-        verbose_name_plural = _('кинопроизведения')
+        verbose_name = _('film work')
+        verbose_name_plural = _('film works')
         db_table = 'content\".\"movies'
 
     def __str__(self):
@@ -157,14 +172,14 @@ class MovieGenre(models.Model):
         related_query_name="gm",
     )
     created = models.DateTimeField(
-        _('дата создания'),
+        _('date of creation'),
         auto_now_add=True,
         blank=True
     )
 
     class Meta:
-        verbose_name = _('жанр фильма')
-        verbose_name_plural = _('жанры фильма')
+        verbose_name = _('film genre')
+        verbose_name_plural = _('film genres')
         db_table = 'content\".\"movie_genre'
         constraints = [
             models.UniqueConstraint(
@@ -175,12 +190,12 @@ class MovieGenre(models.Model):
 
 
 class PersonRole(TimeStampedModel):
-    name = models.CharField(_('название'), max_length=100)
-    description = models.TextField(_('описание'), blank=True)
+    name = models.CharField(_('name'), max_length=100)
+    description = models.TextField(_('description'), blank=True)
 
     class Meta:
-        verbose_name = _('роль')
-        verbose_name_plural = _('роли')
+        verbose_name = _('role')
+        verbose_name_plural = _('roles')
         db_table = 'content\".\"person_roles'
         constraints = [
             models.UniqueConstraint(
@@ -196,16 +211,21 @@ class PersonRole(TimeStampedModel):
 class MoviePersonRole(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    # Я хочу максимально нормализованную схему.
+    # Мой опыт показывает, что это хорошая практика. Поэтому я вынес
+    # все справочники в отдельные таблицы. У вас в ТЗ прямо
+    # не регламентировано, что я должен хранить эти данные
+    # вместе с фильмом.
     person_role = models.ForeignKey(PersonRole, on_delete=models.CASCADE)
     created = models.DateTimeField(
-        _('дата создания'),
+        _('date of creation'),
         auto_now_add=True,
         blank=True
     )
 
     class Meta:
-        verbose_name = _('персона фильма')
-        verbose_name_plural = _('персоны фильмов')
+        verbose_name = _('film person')
+        verbose_name_plural = _('film persons')
         db_table = 'content\".\"movie_person_role'
         constraints = [
             models.UniqueConstraint(
