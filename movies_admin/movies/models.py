@@ -36,6 +36,12 @@ class Certificate(TimeStampedModel):
 class Genre(TimeStampedModel):
     name = models.CharField(_('name'), max_length=255)
     description = models.TextField(_('description'), blank=True)
+    movies = models.ManyToManyField(
+        'Movie',
+        verbose_name=_('genre film'),
+        through='MovieGenre',
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _('ganre')
@@ -61,6 +67,12 @@ class Person(TimeStampedModel):
     full_name = models.CharField(_('full name'), max_length=255)
     birth_date = models.DateField(_('date of birth '), blank=True, null=True)
     gender = models.TextField(_('gender'), choices=Gender.choices, null=True)
+    movies = models.ManyToManyField(
+        'Movie',
+        verbose_name=_('person film'),
+        through='MoviePersonRole',
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _('person')
@@ -136,16 +148,15 @@ class Movie(TimeStampedModel):
     )
     genres = models.ManyToManyField(
         Genre,
-        verbose_name=_('film genre '),
+        # verbose_name=_('film genre'),
         through='MovieGenre',
-        through_fields=['movie_id', 'genre_id'],
-        blank=True
+        # through_fields=['movie_id', 'genre_id'],
+        # blank=True
     )
     persons = models.ManyToManyField(
         Person,
         verbose_name=_('film person'),
         through='MoviePersonRole',
-        through_fields=['movie_id', 'person_id'],
         blank=True,
     )
 
@@ -162,14 +173,14 @@ class MovieGenre(models.Model):
     movie = models.ForeignKey(
         Movie,
         on_delete=models.CASCADE,
-        related_name="mgs",
-        related_query_name="mg",
+        # related_name="mgs",
+        # related_query_name="mg",
     )
     genre = models.ForeignKey(
         Genre,
         on_delete=models.CASCADE,
-        related_name="gms",
-        related_query_name="gm",
+        # related_name="gms",
+        # related_query_name="gm",
     )
     created = models.DateTimeField(
         _('date of creation'),
