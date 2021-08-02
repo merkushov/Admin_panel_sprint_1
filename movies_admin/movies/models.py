@@ -11,16 +11,6 @@ class Certificate(TimeStampedModel):
     class Meta:
         verbose_name = _('age qualification')
         verbose_name_plural = _('age qualifications')
-        # Я пытаюсь применить теорию. В Теории к этому Курсу говорится,
-        # что нужно хранить данные в отдельной "схеме".
-        # Это постулируется как бест-практис!
-        # Единственная возможность, которую я нагуглил для Джанго это
-        # вот этот хак с db_table.
-        # Указание search_path для этого не подходит. Этот конфиг
-        # позволяет указать схемы для поиска для соединения.
-        # Побочный эффект конфига, - первая указанная схема
-        # станет дефолтной. Т.е. все таблицы всего Джанго будут
-        # созданы в первой из указанных схем.
         db_table = 'content\".\"certificates'
         constraints = [
             models.UniqueConstraint(
@@ -125,11 +115,6 @@ class Movie(TimeStampedModel):
         blank=True,
         default=0
     )
-    # Я хочу максимально нормализованную схему.
-    # Мой опыт показывает, что это хорошая практика. Поэтому я вынес
-    # все справочники в отдельные таблицы. У вас в ТЗ прямо
-    # не регламентировано, что я должен хранить эти данные
-    # вместе с фильмом.
     type = models.ForeignKey(
         MovieType,
         verbose_name=_('type of film'),
@@ -148,10 +133,7 @@ class Movie(TimeStampedModel):
     )
     genres = models.ManyToManyField(
         Genre,
-        # verbose_name=_('film genre'),
         through='MovieGenre',
-        # through_fields=['movie_id', 'genre_id'],
-        # blank=True
     )
     persons = models.ManyToManyField(
         Person,
@@ -173,14 +155,10 @@ class MovieGenre(models.Model):
     movie = models.ForeignKey(
         Movie,
         on_delete=models.CASCADE,
-        # related_name="mgs",
-        # related_query_name="mg",
     )
     genre = models.ForeignKey(
         Genre,
         on_delete=models.CASCADE,
-        # related_name="gms",
-        # related_query_name="gm",
     )
     created = models.DateTimeField(
         _('date of creation'),
@@ -222,11 +200,6 @@ class PersonRole(TimeStampedModel):
 class MoviePersonRole(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    # Я хочу максимально нормализованную схему.
-    # Мой опыт показывает, что это хорошая практика. Поэтому я вынес
-    # все справочники в отдельные таблицы. У вас в ТЗ прямо
-    # не регламентировано, что я должен хранить эти данные
-    # вместе с фильмом.
     person_role = models.ForeignKey(PersonRole, on_delete=models.CASCADE)
     created = models.DateTimeField(
         _('date of creation'),

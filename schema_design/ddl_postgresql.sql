@@ -6,11 +6,6 @@ SET search_path TO content,public;
 
 -- Возрастной ценз фильма
 CREATE TABLE content.certificates (
--- Кураторы не убедили меня в необходимости использовать UUID
--- в этом проекте. Я не вижу профита, от использования UUID тут.
--- В ТЗ не регламентируется использование типов полей.
--- На следующем этапе (Админка Джанго) я полностью отказался
--- от полей с типом UUID
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(500),
@@ -22,8 +17,6 @@ CREATE UNIQUE INDEX certificates_name_uidx ON certificates (name);
 
 -- Тип контента (фильма, сериал и т.п.)
 CREATE TABLE content.movie_types (
--- Мне больше по душе максимальная нормализация данных.
--- Куратор не против подобной интерпритации предметной области.
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -97,44 +90,16 @@ ALTER TABLE content.genre_movie
 -- Персоны и Роли персон в фильме
 CREATE TABLE content.persons (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-
--- Использование first_name - middle_name - second_name затруднительно
--- 1. Оригинальные данные сильно затрудняют автоматический перенос 
--- Пример
---      sqlite> SELECT * FROM actors;
---      ...
---      2353|Joe Hachem
---      2354|Lee Dr. Nelson
---      2355|Amanda
---      2356|Ben
---      2357|Nina Xining Zuo
---      2358|Misty Mills
---      2359|Mary Lynne Gibbs
---      2360|Joseph Miller
---      2361|T. Michael Adams
---      2362|Jeremiah Trotter
---      2363|Thomas C. Bartley Jr.
--- 2. В рамках Проекта не предусмотрена админка для ручного корректирования
--- 3. Предметная область не требует этого
     full_name VARCHAR(500) NOT NULL,
     birth_date DATE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Сделать имя уникальным, - плохая идея
--- Но это неплохой вариант выполнить автоматический перенос данных
--- с возможностью нескольких последовательных запусков, в случае
--- необходимости. Полностью автоматический перенос данных невозможен
--- из-за проблем пересечения актёров и сценаристов по именам, но не по
--- уникальным ID
 CREATE UNIQUE INDEX persons_full_name_uidx ON content.persons (full_name);
 
 -- Роли персон (актёр, режисёр, сценарист и т.п.)
 CREATE TABLE content.person_roles (
--- Когда ролей персон станет больше, лучше иметь справочник
--- в отдельной таблице. Моё решение основано на опыте
--- и здравом смысле.
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(500),

@@ -145,10 +145,6 @@ class PostgresSaver():
                 movie.imdb_identifier, {}
             ).setdefault('writers', ['stumb'])
             for actor in movie.actors:
-                # Авторы сильно упростили пример с базой. Я брал за основу
-                # базу предыдущей версии. Там не было UUID в качестве ключей.
-                # Я понимаю приемущество UUID. Я не хочу использовать
-                # это тип в Проекте. ТЗ это не регламентирует.
                 movie_person_role[movie.imdb_identifier]['actors'].append(
                     actor.name
                 )
@@ -317,14 +313,6 @@ class SQLiteLoader():
 
     def load_persons(self, start: int, limit: int) -> list:
         persons = []
-
-        # Код не самый оптимальный, но
-        # 1. Код не критичный, и операция импорта данных будет вызвана
-        #   считанное количество раз. В идеале, один раз.
-        # 2. Исходя из пункта выше, можно принебречь небольшими
-        #   накладными расходами, в пользу читаемости и удобства
-        #   поддержки.
-
         rows = self.sqlite_connection.execute(
             "SELECT name FROM actors LIMIT %s, %s" % (start, limit)
         ).fetchall()
@@ -342,25 +330,6 @@ class SQLiteLoader():
         rows = self.sqlite_connection.execute(
             "SELECT name FROM writers LIMIT %s, %s" % (start, limit)
         ).fetchall()
-
-        # Использовать имя как уникальный ключ неправильно, но...
-        # 1. В старой (первой) версии БД Проекта автоматический перенос
-        #   Персон не представляется возможным. Т.к. имена авторов
-        #   и сценаристов дублируются между собой, но имеют разные типы
-        #   идентификаторов. Пример
-        #       sqlite> .tables
-        #       actors movie_actors movies rating_agency  writers
-        #       sqlite> SELECT * FROM (
-        #           SELECT * FROM writers
-        #           UNION ALL
-        #           SELECT * FROM actors
-        #        ) WHERE name IN('William Winckler', 'Paul Reiche III');
-        #       0b60f2f3a6d7e55418d8e8cfd2dd7a8ace0f55fc|Paul Reiche III
-        #       0b60f2f3d1f03b284d44cd48204e18490c980ec4|William Winckler
-        #       2279|William Winckler
-        #       2345|Paul Reiche III
-        # 2. Легенда проекта не предусматривает инфраструктуру для
-        #   полу-ручного переноса данных или ручной верификации.
 
         for row in rows:
             persons.append(row["name"])
