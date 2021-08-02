@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='certificate',
-            options={'verbose_name': 'age qualification', 'verbose_name_plural': 'age qualifications'},
+            options={'verbose_name': 'age qualification',
+                     'verbose_name_plural': 'age qualifications'},
         ),
         migrations.AlterModelOptions(
             name='genre',
@@ -22,23 +23,28 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='movie',
-            options={'verbose_name': 'film work', 'verbose_name_plural': 'film works'},
+            options={'verbose_name': 'film work',
+                     'verbose_name_plural': 'film works'},
         ),
         migrations.AlterModelOptions(
             name='moviegenre',
-            options={'verbose_name': 'film genre', 'verbose_name_plural': 'film genres'},
+            options={'verbose_name': 'film genre',
+                     'verbose_name_plural': 'film genres'},
         ),
         migrations.AlterModelOptions(
             name='moviepersonrole',
-            options={'verbose_name': 'film person', 'verbose_name_plural': 'film persons'},
+            options={'verbose_name': 'film person',
+                     'verbose_name_plural': 'film persons'},
         ),
         migrations.AlterModelOptions(
             name='movietype',
-            options={'verbose_name': 'type of film', 'verbose_name_plural': 'types of film'},
+            options={'verbose_name': 'type of film',
+                     'verbose_name_plural': 'types of film'},
         ),
         migrations.AlterModelOptions(
             name='person',
-            options={'verbose_name': 'person', 'verbose_name_plural': 'persons'},
+            options={'verbose_name': 'person',
+                     'verbose_name_plural': 'persons'},
         ),
         migrations.AlterModelOptions(
             name='personrole',
@@ -47,12 +53,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='genre',
             name='movies',
-            field=models.ManyToManyField(blank=True, through='movies.MovieGenre', to='movies.Movie', verbose_name='genre film'),
+            field=models.ManyToManyField(
+                blank=True, through='movies.MovieGenre', to='movies.Movie', verbose_name='genre film'),
         ),
         migrations.AddField(
             model_name='person',
             name='movies',
-            field=models.ManyToManyField(blank=True, through='movies.MoviePersonRole', to='movies.Movie', verbose_name='person film'),
+            field=models.ManyToManyField(
+                blank=True, through='movies.MoviePersonRole', to='movies.Movie', verbose_name='person film'),
         ),
         migrations.AlterField(
             model_name='certificate',
@@ -77,12 +85,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='movie',
             name='certificate',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movies.certificate', verbose_name='age qualification'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='movies', to='movies.certificate', verbose_name='age qualification'),
         ),
         migrations.AlterField(
             model_name='movie',
             name='creation_date',
-            field=models.DateField(blank=True, null=True, verbose_name='movie creation date '),
+            field=models.DateField(blank=True, null=True,
+                                   verbose_name='movie creation date '),
         ),
         migrations.AlterField(
             model_name='movie',
@@ -92,27 +102,32 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='movie',
             name='file_path',
-            field=models.FileField(blank=True, upload_to='movies/', verbose_name='file'),
+            field=models.FileField(
+                blank=True, upload_to='movies/', verbose_name='file'),
         ),
         migrations.AlterField(
             model_name='movie',
             name='genres',
-            field=models.ManyToManyField(through='movies.MovieGenre', to='movies.Genre'),
+            field=models.ManyToManyField(
+                through='movies.MovieGenre', to='movies.Genre'),
         ),
         migrations.AlterField(
             model_name='movie',
             name='imdb_identifier',
-            field=models.CharField(blank=True, max_length=255, verbose_name='IMDB identifier'),
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name='IMDB identifier'),
         ),
         migrations.AlterField(
             model_name='movie',
             name='persons',
-            field=models.ManyToManyField(blank=True, through='movies.MoviePersonRole', to='movies.Person', verbose_name='film person'),
+            field=models.ManyToManyField(
+                blank=True, through='movies.MoviePersonRole', to='movies.Person', verbose_name='film person'),
         ),
         migrations.AlterField(
             model_name='movie',
             name='rating',
-            field=models.FloatField(blank=True, default=0, validators=[django.core.validators.MinValueValidator(0)], verbose_name='rating'),
+            field=models.FloatField(blank=True, default=0, validators=[
+                                    django.core.validators.MinValueValidator(0)], verbose_name='rating'),
         ),
         migrations.AlterField(
             model_name='movie',
@@ -122,27 +137,32 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='movie',
             name='type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movies.movietype', verbose_name='type of film'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='movies', to='movies.movietype', verbose_name='type of film'),
         ),
         migrations.AlterField(
             model_name='moviegenre',
             name='created',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='date of creation'),
+            field=models.DateTimeField(
+                auto_now_add=True, verbose_name='date of creation'),
         ),
         migrations.AlterField(
             model_name='moviegenre',
             name='genre',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.genre'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='movies.genre'),
         ),
         migrations.AlterField(
             model_name='moviegenre',
             name='movie',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.movie'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='movies.movie'),
         ),
         migrations.AlterField(
             model_name='moviepersonrole',
             name='created',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='date of creation'),
+            field=models.DateTimeField(
+                auto_now_add=True, verbose_name='date of creation'),
         ),
         migrations.AlterField(
             model_name='movietype',
@@ -152,7 +172,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='person',
             name='birth_date',
-            field=models.DateField(blank=True, null=True, verbose_name='date of birth '),
+            field=models.DateField(blank=True, null=True,
+                                   verbose_name='date of birth '),
         ),
         migrations.AlterField(
             model_name='person',
@@ -162,7 +183,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='person',
             name='gender',
-            field=models.TextField(choices=[('male', 'male gender '), ('female', 'female gender ')], null=True, verbose_name='gender'),
+            field=models.TextField(choices=[(
+                'male', 'male gender '), ('female', 'female gender ')], null=True, verbose_name='gender'),
         ),
         migrations.AlterField(
             model_name='personrole',

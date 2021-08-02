@@ -8,7 +8,6 @@ import model_utils.fields
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -22,11 +21,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Certificate',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', model_utils.fields.AutoCreatedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('name', models.CharField(max_length=60, verbose_name='название')),
-                ('description', models.TextField(blank=True, verbose_name='описание')),
+                ('description', models.TextField(
+                    blank=True, verbose_name='описание')),
             ],
             options={
                 'verbose_name': 'возрастной ценз',
@@ -37,11 +40,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Genre',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', model_utils.fields.AutoCreatedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('name', models.CharField(max_length=255, verbose_name='название')),
-                ('description', models.TextField(blank=True, verbose_name='описание')),
+                ('description', models.TextField(
+                    blank=True, verbose_name='описание')),
             ],
             options={
                 'verbose_name': 'жанр',
@@ -52,16 +59,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Movie',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', model_utils.fields.AutoCreatedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('title', models.CharField(max_length=255, verbose_name='название')),
-                ('description', models.TextField(blank=True, verbose_name='описание')),
-                ('imdb_identifier', models.CharField(blank=True, max_length=255, verbose_name='IMDB идентификатор')),
-                ('creation_date', models.DateField(blank=True, null=True, verbose_name='дата создания фильма')),
-                ('file_path', models.FileField(blank=True, upload_to='movies/', verbose_name='файл')),
-                ('rating', models.FloatField(blank=True, default=0, validators=[django.core.validators.MinValueValidator(0)], verbose_name='рейтинг')),
-                ('certificate', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movies.certificate', verbose_name='возрастной ценз')),
+                ('description', models.TextField(
+                    blank=True, verbose_name='описание')),
+                ('imdb_identifier', models.CharField(blank=True,
+                 max_length=255, verbose_name='IMDB идентификатор')),
+                ('creation_date', models.DateField(blank=True,
+                 null=True, verbose_name='дата создания фильма')),
+                ('file_path', models.FileField(blank=True,
+                 upload_to='movies/', verbose_name='файл')),
+                ('rating', models.FloatField(blank=True, default=0, validators=[
+                 django.core.validators.MinValueValidator(0)], verbose_name='рейтинг')),
+                ('certificate', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                 related_name='movies', to='movies.certificate', verbose_name='возрастной ценз')),
             ],
             options={
                 'verbose_name': 'кинопроизведение',
@@ -72,9 +88,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MovieType',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', model_utils.fields.AutoCreatedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('name', models.CharField(max_length=255, verbose_name='название')),
             ],
             options={
@@ -86,12 +105,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Person',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', model_utils.fields.AutoCreatedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('full_name', models.CharField(max_length=255, verbose_name='ФИО')),
-                ('birth_date', models.DateField(blank=True, null=True, verbose_name='дата рождения')),
-                ('gender', models.TextField(choices=[('male', 'мужской'), ('female', 'женский')], null=True, verbose_name='пол')),
+                ('birth_date', models.DateField(blank=True,
+                 null=True, verbose_name='дата рождения')),
+                ('gender', models.TextField(choices=[
+                 ('male', 'мужской'), ('female', 'женский')], null=True, verbose_name='пол')),
             ],
             options={
                 'verbose_name': 'персона',
@@ -102,11 +126,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PersonRole',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', model_utils.fields.AutoCreatedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='created')),
+                ('modified', model_utils.fields.AutoLastModifiedField(
+                    default=django.utils.timezone.now, editable=False, verbose_name='modified')),
                 ('name', models.CharField(max_length=100, verbose_name='название')),
-                ('description', models.TextField(blank=True, verbose_name='описание')),
+                ('description', models.TextField(
+                    blank=True, verbose_name='описание')),
             ],
             options={
                 'verbose_name': 'роль',
@@ -117,11 +145,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MoviePersonRole',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='дата создания')),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.movie')),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.person')),
-                ('person_role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.personrole')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', models.DateTimeField(
+                    auto_now_add=True, verbose_name='дата создания')),
+                ('movie', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='movies.movie')),
+                ('person', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='movies.person')),
+                ('person_role', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='movies.personrole')),
             ],
             options={
                 'verbose_name': 'персона фильма',
@@ -132,10 +165,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MovieGenre',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='дата создания')),
-                ('genre', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='gms', related_query_name='gm', to='movies.genre')),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='mgs', related_query_name='mg', to='movies.movie')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('created', models.DateTimeField(
+                    auto_now_add=True, verbose_name='дата создания')),
+                ('genre', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='gms', related_query_name='gm', to='movies.genre')),
+                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='mgs', related_query_name='mg', to='movies.movie')),
             ],
             options={
                 'verbose_name': 'жанр фильма',
@@ -146,16 +183,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='movie',
             name='genres',
-            field=models.ManyToManyField(blank=True, through='movies.MovieGenre', to='movies.Genre', verbose_name='жанр фильма'),
+            field=models.ManyToManyField(
+                blank=True, through='movies.MovieGenre', to='movies.Genre', verbose_name='жанр фильма'),
         ),
         migrations.AddField(
             model_name='movie',
             name='persons',
-            field=models.ManyToManyField(blank=True, through='movies.MoviePersonRole', to='movies.Person', verbose_name='персона фильма'),
+            field=models.ManyToManyField(
+                blank=True, through='movies.MoviePersonRole', to='movies.Person', verbose_name='персона фильма'),
         ),
         migrations.AddField(
             model_name='movie',
             name='type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movies.movietype', verbose_name='тип кинопроизведения'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='movies', to='movies.movietype', verbose_name='тип кинопроизведения'),
         ),
     ]

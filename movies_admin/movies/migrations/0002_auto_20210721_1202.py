@@ -12,26 +12,32 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddConstraint(
             model_name='certificate',
-            constraint=models.UniqueConstraint(fields=('name',), name='certificates_name_uidx'),
+            constraint=models.UniqueConstraint(
+                fields=('name',), name='certificates_name_uidx'),
         ),
         migrations.AddConstraint(
             model_name='genre',
-            constraint=models.UniqueConstraint(fields=('name',), name='genres_name_uidx'),
+            constraint=models.UniqueConstraint(
+                fields=('name',), name='genres_name_uidx'),
         ),
         migrations.AddConstraint(
             model_name='moviepersonrole',
-            constraint=models.UniqueConstraint(fields=('movie_id', 'person_id', 'person_role_id'), name='movie_person_role_main_uidx'),
+            constraint=models.UniqueConstraint(fields=(
+                'movie_id', 'person_id', 'person_role_id'), name='movie_person_role_main_uidx'),
         ),
         migrations.AddConstraint(
             model_name='movietype',
-            constraint=models.UniqueConstraint(fields=('name',), name='movie_types_name_uidx'),
+            constraint=models.UniqueConstraint(
+                fields=('name',), name='movie_types_name_uidx'),
         ),
         migrations.AddConstraint(
             model_name='person',
-            constraint=models.UniqueConstraint(fields=('full_name',), name='persons_full_name_uidx'),
+            constraint=models.UniqueConstraint(
+                fields=('full_name',), name='persons_full_name_uidx'),
         ),
         migrations.AddConstraint(
             model_name='personrole',
-            constraint=models.UniqueConstraint(fields=('name',), name='person_roles_name_uidx'),
+            constraint=models.UniqueConstraint(
+                fields=('name',), name='person_roles_name_uidx'),
         ),
     ]

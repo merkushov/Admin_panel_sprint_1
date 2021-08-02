@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddConstraint(
             model_name='moviegenre',
-            constraint=models.UniqueConstraint(fields=('movie_id', 'genre_id'), name='movie_genre_main_uidx'),
+            constraint=models.UniqueConstraint(
+                fields=('movie_id', 'genre_id'), name='movie_genre_main_uidx'),
         ),
     ]
