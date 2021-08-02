@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
+env = environ.Env()
+env.read_env(env.str('ENV_PATH', '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -25,10 +28,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # как только нам грамотно расскажут про настройку среды разработки и деплой.
 # И как только я пойму, что у нас всех, в том числе у ревьюеров, есть общее
 # понимание того, как запускать Проект.
-SECRET_KEY = '3vsg*wbd@i7h=#e!20cbf6f-smej=_+#k3j=m+mxir-_%*kh6x'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = []
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'movies',
 ]
 
@@ -87,15 +88,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 #   что является плохой практикой, и усложнит "чтение" кода проекта.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'movie_catalog',
-        'USER': 'postgres',
-        'PASSWORD': 'qdQd03NdkJDIb3293jkhasdejd',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
         'OPTIONS': {
             'options': '-c search_path=public,content'
-            # 'options': '-c search_path=content,public'
         },
     }
 }

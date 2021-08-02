@@ -110,8 +110,8 @@ class Command(BaseCommand):
         return result
 
     def fillin_catalog(
-                        self, factory_manager, manager,
-                        total_count=10, **kwargs):
+            self, factory_manager, manager,
+            total_count=10, **kwargs):
         print("Start processing %s (bulk_create)" % manager.__name__)
 
         factory_options = {}

@@ -1,12 +1,12 @@
 import dataclasses
 from dataclasses import dataclass, field
 
+import environ
 import json
 import sqlite3
 import psycopg2
 from psycopg2.extensions import connection as _connection
 from psycopg2.extras import DictCursor, execute_batch
-import uuid
 
 
 @dataclass(frozen=True)
@@ -427,12 +427,16 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
 
 
 if __name__ == '__main__':
+
+    env = environ.Env()
+    env.read_env(env.str('ENV_PATH', '.env'))
+
     pg_dsn = {
-        'dbname': 'movie_catalog',
-        'user': 'postgres',
-        'password': 'qdQd03NdkJDIb3293jkhasdejd',
-        'host': '127.0.0.1',
-        'port': 5432,
+        'dbname': env('DB_NAME'),
+        'user': env('DB_USER'),
+        'password': env('DB_PASSWORD'),
+        'host': env('DB_HOST'),
+        'port': env('DB_PORT'),
         'options': '-c search_path=content',
     }
 

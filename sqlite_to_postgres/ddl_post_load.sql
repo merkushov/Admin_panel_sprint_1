@@ -1,0 +1,1 @@
+DROP INDEX persons_full_name_uidx;
