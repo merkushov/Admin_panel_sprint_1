@@ -34,7 +34,7 @@ class Genre(TimeStampedModel):
     )
 
     class Meta:
-        verbose_name = _('ganre')
+        verbose_name = _('genre')
         verbose_name_plural = _('genres')
         db_table = 'content\".\"genres'
         constraints = [
@@ -125,7 +125,7 @@ class Movie(TimeStampedModel):
     )
     certificate = models.ForeignKey(
         Certificate,
-        verbose_name=('age qualification'),
+        verbose_name=_('age qualification'),
         related_name='movies',
         on_delete=models.SET_NULL,
         blank=True,
