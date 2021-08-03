@@ -141,6 +141,10 @@ class Movie(TimeStampedModel):
         through='MoviePersonRole',
         blank=True,
     )
+    person_roles = models.ManyToManyField(
+        'PersonRole',
+        through='MoviePersonRole'
+    )
 
     class Meta:
         verbose_name = _('film work')
