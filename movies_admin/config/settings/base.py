@@ -26,8 +26,7 @@ env.read_env(env.str('ENV_PATH', '.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 

@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+
+  db:
+    image: postgres:13
+    container_name: yandex_p_db
+    restart: always
+    env_file:
+      - movies_admin/.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - yandex_p_network
+
+  app:
+    build:
+      context: ./movies_admin
+      dockerfile: Dockerfile
+    container_name: yandex_p_app
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./movies_admin/.env
+    volumes:
+      - ./movies_admin:/usr/src/app
+    expose:
+      - "8000"
+    networks:
+      - yandex_p_network
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:1.19.2
+    container_name: yandex_p_nginx
+    volumes:
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./etc/nginx/sites:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+    networks:
+      - yandex_p_network
+
+volumes:
+  postgres-data:
+
+networks:
+  yandex_p_network:
