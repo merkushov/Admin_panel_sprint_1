@@ -25,6 +25,7 @@ services:
       - ./movies_admin/.env
     volumes:
       - ./movies_admin:/usr/src/app
+      - static_volume:/usr/src/app/static
     expose:
       - "8000"
     networks:
@@ -38,6 +39,7 @@ services:
     volumes:
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./etc/nginx/sites:/etc/nginx/conf.d:ro
+      - static_volume:/usr/src/app/static
     depends_on:
       - app
     ports:
@@ -47,6 +49,7 @@ services:
 
 volumes:
   postgres-data:
+  static_volume:
 
 networks:
   yandex_p_network:
