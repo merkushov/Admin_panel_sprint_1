@@ -1,10 +1,17 @@
-# Greetings traveller
+# Каталог фильмов
 
-Мы рады, что вы приступили к выполнению 1 задания из курса middle-python разработчик.
- 
-Описание структуры и порядок выполнения проекта:
-1. `schema_design` - раздел c материалами для новой архитектуры базы данных.
-2. `sqlite_to_postgres` - раздел с материалами по миграции данных.
-3. `movies_admin` - раздел с материалами для панели администратора.
+## Как работать с Проектом
 
-Успехов!
+```shell
+# Скачать код
+$ git clone git@github.com:merkushov/Admin_panel_sprint_1.git
+$ cd Admin_panel_sprint_1
+
+# (devel) Развернуть код в контейнерах Докер
+$ cp movies_admin/.env.example movies_admin/.env
+$ docker-compose up -d --build
+
+# (production) Развернуть код в контейнерах Докер
+$ cp movies_admin/.env.example movies_admin/.env
+$ docker-compose -f docker-compose.prod.yaml up -d --build
+```
