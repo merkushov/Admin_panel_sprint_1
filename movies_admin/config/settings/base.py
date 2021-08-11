@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
     'movies',
 ]
+
+if env('MOVIE_STAGE') == 'dev':
+    INSTALLED_APPS.append["django_extensions"]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
