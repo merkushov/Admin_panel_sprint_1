@@ -1,5 +1,8 @@
 FROM python:3.9
 
+RUN apt-get update
+RUN apt-get install -y gettext
+
 # set work directory
 WORKDIR /usr/src/app
 
@@ -8,7 +11,7 @@ RUN pip install --upgrade pip
 RUN pip install -r ./requirements/dev.txt
 
 # copy entrypoint.sh
-COPY ./entrypoint.sh .
+#COPY ./entrypoint.sh .
 
 # copy project
 COPY . .
